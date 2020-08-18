@@ -1,9 +1,9 @@
 package main
 
 import (
+	"appbrickie/api"
+	"appbrickie/bot"
 	"sync"
-	"tele-go/api"
-	"tele-go/bot"
 )
 
 var wg sync.WaitGroup

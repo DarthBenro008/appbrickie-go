@@ -1,4 +1,4 @@
-module tele-go
+module appbrickie
 
 go 1.14
 
