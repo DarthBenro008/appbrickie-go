@@ -1,4 +1,4 @@
-package main
+package bot
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ import (
 	"os"
 )
 
-func app() {
+func InitialiseBot() {
 	fmt.Println("We Good ")
 	err := godotenv.Load()
 	if err != nil {
