@@ -8,7 +8,7 @@ import (
 	"os"
 )
 
-func main() {
+func app() {
 	fmt.Println("We Good ")
 	err := godotenv.Load()
 	if err != nil {
@@ -37,13 +37,9 @@ func main() {
 
 		switch update.Message.Command() {
 		case "sayhi":
-			msg.Text = "Hi ! :)"
+			messageHandler(update, bot)
 		default:
 			msg.Text = "I do not know that command !"
-		}
-
-		if _, err := bot.Send(msg); err != nil {
-			log.Panic(err)
 		}
 	}
 }
