@@ -26,7 +26,13 @@ func SendPackage(id int64, message string, packagePath string) (bool, error) {
 		"document", packagePath)
 	if err != nil {
 		log.Println("Api SendPackage: " + err.Error())
+		SendErrorMessage(id)
 		return false, err
 	}
 	return true, nil
+}
+
+func SendErrorMessage(id int64) {
+	msg := tgbotapi.NewMessage(id, "There was an error sending your package 😨 Please check your repo for latest build!")
+	_, _ = HandlerBot.Send(msg)
 }

@@ -9,15 +9,16 @@ import (
 
 //Router
 func HandlerRouter(app fiber.Router) {
-	app.Get("/status", StatusCheck)
+	app.Get("/status", statusCheck)
 	app.Get("/sendMessage/:id", sendID)
 	app.Post("/sendPackage", sendPackage)
 }
 
 //HandlerFunctions
-func StatusCheck(c *fiber.Ctx) {
+func statusCheck(c *fiber.Ctx) {
 	_ = c.JSON(&fiber.Map{
-		"msg": "HelloWorld",
+		"msg":     handlers.HandlerBot.Self.UserName + " is up and running!",
+		"success": true,
 	})
 }
 
@@ -34,14 +35,11 @@ func sendID(c *fiber.Ctx) {
 
 func sendPackage(c *fiber.Ctx) {
 	file, err := c.FormFile("file")
-	if file.Size > 50000000 {
-		_ = c.JSON(&fiber.Map{
-			"success": false,
-			"error":   "Exceeded Size Limit!",
-		})
-		return
-	}
+	id := c.FormValue("id")
+	msg := c.FormValue("msg")
+	rid, _ := strconv.ParseInt(id, 10, 64)
 	if err != nil {
+		handlers.SendErrorMessage(rid)
 		log.Println("Invalid Multipart")
 		_ = c.JSON(&fiber.Map{
 			"success": false,
@@ -49,12 +47,18 @@ func sendPackage(c *fiber.Ctx) {
 		})
 		return
 	}
+	if file.Size > 50000000 {
+		handlers.SendErrorMessage(rid)
+		_ = c.JSON(&fiber.Map{
+			"success": false,
+			"error":   "Exceeded Size Limit!",
+		})
+		return
+	}
 	filename := file.Filename
-	id := c.FormValue("id")
-	msg := c.FormValue("msg")
-	rid, _ := strconv.ParseInt(id, 10, 64)
 	err = c.SaveFile(file, "cache/"+file.Filename)
 	if err != nil {
+		handlers.SendErrorMessage(rid)
 		log.Println("Error Saving File")
 		_ = c.JSON(&fiber.Map{
 			"success": false,
@@ -64,13 +68,14 @@ func sendPackage(c *fiber.Ctx) {
 	}
 	response, err := handlers.SendPackage(rid, msg, "cache/"+file.Filename)
 	if err != nil {
+		handlers.SendErrorMessage(rid)
 		_ = c.JSON(&fiber.Map{
 			"success": false,
 			"file":    filename,
 			"error":   err.Error(),
 		})
 	}
-	c.JSON(&fiber.Map{
+	_ = c.JSON(&fiber.Map{
 		"success": response,
 		"file":    filename,
 	})

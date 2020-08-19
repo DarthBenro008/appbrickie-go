@@ -14,6 +14,6 @@ func InitialiseApi() {
 	api := app.Group("/api")
 	app.Use(middleware.Logger())
 	HandlerRouter(api)
-	log.Print("API Running")
+	log.Print("API is up and Running")
 	_ = app.Listen(3000)
 }

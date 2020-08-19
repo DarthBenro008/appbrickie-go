@@ -16,7 +16,7 @@
 ----BOT END----
 
 ----API START----
-POST /api/v1/sendPackage --multipart
-GET /api/v1/health
-POST /api/v1/logs
+POST /api/v1/sendPackage --multipart --done
+GET /api/v1/health --done
+POST /api/v1/logs --DB
 ----API END----
