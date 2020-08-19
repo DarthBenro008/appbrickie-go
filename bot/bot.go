@@ -1,12 +1,12 @@
 package bot
 
 import (
+	"appbrickie/bot/handlers"
 	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/joho/godotenv"
 	"log"
 	"os"
-	"strconv"
 )
 
 var (
@@ -38,36 +38,22 @@ func InitialiseBot() {
 	}
 	bot.Debug = true
 	log.Printf("%s Bot is up and running", bot.Self.UserName)
+	handlers.HandlerBot = bot
 
 	u := tgbotapi.NewUpdate(0)
 	u.Timeout = 60
-
 	updates, err := bot.GetUpdatesChan(u)
+
 	for update := range updates {
-		//TODO: Add Message and Channel Handlers
-		if update.Message == nil {
-			if update.ChannelPost != nil {
-				if update.ChannelPost.Text == "!get" {
-					msg := tgbotapi.NewMessage(update.ChannelPost.Chat.ID, strconv.Itoa(int(update.ChannelPost.Chat.ID)))
-					msg.ReplyToMessageID = update.ChannelPost.MessageID
-					_, _ = bot.Send(msg)
-				}
-			}
+		handlers.HandlerUpdate = update
+		if update.ChannelPost != nil {
+			handlers.ChannelHandler()
 			continue
 		}
 		if !update.Message.IsCommand() {
 			continue
 		}
-
-		msg := tgbotapi.NewMessage(update.Message.Chat.ID, "")
-
-		switch update.Message.Command() {
-		case "getID":
-			messageHandler(update, bot)
-
-		default:
-			msg.Text = "I do not know that command !"
-		}
+		handlers.ChatHandler()
 	}
 }
 func (mdet SendMessage) sendMessage() bool {
