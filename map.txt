@@ -1,0 +1,22 @@
+----BOT----
+--Normal Chat--
+/start
+/help
+/getId
+/showHistory  --DB
+/showLatestPackage  --DB
+--Channel--
+!getId
+!showHistory    --DB
+!help
+!SetTemplate    --DB
+!ShowTemplate   --DB
+--Group--
+<Same Features as Normal Chat>
+----BOT END----
+
+----API START----
+POST /api/v1/sendPackage --multipart
+GET /api/v1/health
+POST /api/v1/logs
+----API END----

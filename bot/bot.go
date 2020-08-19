@@ -6,6 +6,7 @@ import (
 	"github.com/joho/godotenv"
 	"log"
 	"os"
+	"strconv"
 )
 
 var (
@@ -43,7 +44,15 @@ func InitialiseBot() {
 
 	updates, err := bot.GetUpdatesChan(u)
 	for update := range updates {
+		//TODO: Add Message and Channel Handlers
 		if update.Message == nil {
+			if update.ChannelPost != nil {
+				if update.ChannelPost.Text == "!get" {
+					msg := tgbotapi.NewMessage(update.ChannelPost.Chat.ID, strconv.Itoa(int(update.ChannelPost.Chat.ID)))
+					msg.ReplyToMessageID = update.ChannelPost.MessageID
+					_, _ = bot.Send(msg)
+				}
+			}
 			continue
 		}
 		if !update.Message.IsCommand() {
@@ -53,8 +62,9 @@ func InitialiseBot() {
 		msg := tgbotapi.NewMessage(update.Message.Chat.ID, "")
 
 		switch update.Message.Command() {
-		case "sayhi":
+		case "getID":
 			messageHandler(update, bot)
+
 		default:
 			msg.Text = "I do not know that command !"
 		}

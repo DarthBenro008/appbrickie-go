@@ -5,6 +5,10 @@ import (
 	"strconv"
 )
 
+var (
+	lol string
+)
+
 func messageHandler(update tgbotapi.Update, bot *tgbotapi.BotAPI) {
 	//msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Hi!")
 	//if _, err := api.Send(msg); err != nil {
