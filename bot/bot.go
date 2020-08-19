@@ -13,19 +13,6 @@ var (
 	bot *tgbotapi.BotAPI
 )
 
-type Bot interface {
-	sendMessage() bool
-}
-
-type SendMessage struct {
-	Id   int64
-	Cmsg string
-}
-
-func NewBotInterface(inter Bot) {
-	inter.sendMessage()
-}
-
 func InitialiseBot() {
 	fmt.Println("We Good ")
 	err := godotenv.Load()
@@ -55,13 +42,4 @@ func InitialiseBot() {
 		}
 		handlers.ChatHandler()
 	}
-}
-func (mdet SendMessage) sendMessage() bool {
-	msg := tgbotapi.NewMessage(mdet.Id, mdet.Cmsg)
-	_, err := bot.Send(msg)
-	if err != nil {
-		log.Fatal(err)
-		return false
-	}
-	return true
 }
