@@ -33,8 +33,14 @@ func sendID(c *fiber.Ctx) {
 }
 
 func sendPackage(c *fiber.Ctx) {
-	var filename string
-	form, err := c.MultipartForm()
+	file, err := c.FormFile("file")
+	if file.Size > 50000000 {
+		_ = c.JSON(&fiber.Map{
+			"success": false,
+			"error":   "Exceeded Size Limit!",
+		})
+		return
+	}
 	if err != nil {
 		log.Println("Invalid Multipart")
 		_ = c.JSON(&fiber.Map{
@@ -43,18 +49,10 @@ func sendPackage(c *fiber.Ctx) {
 		})
 		return
 	}
-	file := form.File["file"][0]
-	id := form.Value["id"][0]
-	msg := form.Value["msg"][0]
-	if file.Size >= 52428800 {
-		log.Println("File Limit Exceeded")
-		_ = c.JSON(&fiber.Map{
-			"success": false,
-			"error":   "File Size Limit Exceeded!",
-		})
-		return
-	}
-	filename = file.Filename
+	filename := file.Filename
+	id := c.FormValue("id")
+	msg := c.FormValue("msg")
+	rid, _ := strconv.ParseInt(id, 10, 64)
 	err = c.SaveFile(file, "cache/"+file.Filename)
 	if err != nil {
 		log.Println("Error Saving File")
@@ -64,12 +62,7 @@ func sendPackage(c *fiber.Ctx) {
 		})
 		return
 	}
-
-	rid, err := strconv.ParseInt(id, 10, 64)
-	if err != nil {
-		log.Println("invalid conversion")
-	}
-	_, err = handlers.SendPackage(rid, msg, "cache/"+filename)
+	response, err := handlers.SendPackage(rid, msg, "cache/"+file.Filename)
 	if err != nil {
 		_ = c.JSON(&fiber.Map{
 			"success": false,
@@ -77,9 +70,8 @@ func sendPackage(c *fiber.Ctx) {
 			"error":   err.Error(),
 		})
 	}
-	_ = c.JSON(&fiber.Map{
-		"success": true,
+	c.JSON(&fiber.Map{
+		"success": response,
 		"file":    filename,
-		"error":   "",
 	})
 }
