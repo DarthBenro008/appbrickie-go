@@ -4,7 +4,6 @@ import (
 	"appbrickie/bot/handlers"
 	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
-	"github.com/joho/godotenv"
 	"log"
 	"os"
 )
@@ -14,16 +13,16 @@ var (
 )
 
 func InitialiseBot() {
-	fmt.Println("We Good ")
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error Loading env File")
-	}
-	bot, err = tgbotapi.NewBotAPI(os.Getenv("BOT_TOKEN"))
+	fmt.Println("Bot Starting ")
+	//err := godotenv.Load()
+	//if err != nil {
+	//	log.Fatal("Error Loading env File")
+	//}
+	bot, err := tgbotapi.NewBotAPI(os.Getenv("BOT_TOKEN"))
 	if err != nil {
 		log.Fatalf("Error Initialising bot due to %s", err.Error())
 	}
-	bot.Debug = true
+	bot.Debug = false
 	log.Printf("%s Bot is up and running", bot.Self.UserName)
 	handlers.HandlerBot = bot
 
