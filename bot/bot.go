@@ -14,10 +14,6 @@ var (
 
 func InitialiseBot() {
 	fmt.Println("Bot Starting ")
-	//err := godotenv.Load()
-	//if err != nil {
-	//	log.Fatal("Error Loading env File")
-	//}
 	bot, err := tgbotapi.NewBotAPI(os.Getenv("BOT_TOKEN"))
 	if err != nil {
 		log.Fatalf("Error Initialising bot due to %s", err.Error())
