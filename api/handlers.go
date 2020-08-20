@@ -4,6 +4,7 @@ import (
 	"appbrickie/bot/handlers"
 	"github.com/gofiber/fiber"
 	"log"
+	"os"
 	"strconv"
 )
 
@@ -56,6 +57,12 @@ func sendPackage(c *fiber.Ctx) {
 		return
 	}
 	filename := file.Filename
+	if _, err := os.Stat("cache"); os.IsNotExist(err) {
+		err = os.Mkdir("cache", 0700)
+		if err != nil {
+			log.Println(err)
+		}
+	}
 	err = c.SaveFile(file, "cache/"+file.Filename)
 	if err != nil {
 		handlers.SendErrorMessage(rid)

@@ -21,10 +21,17 @@ func errorHandler() {
 	chatMessage.Text = "I do not know that command"
 }
 
+func greetHandler() {
+	chatMessage.Text = "Hello " + HandlerUpdate.Message.Chat.FirstName + "!"
+}
+
 func ChatHandler() {
 	switch HandlerUpdate.Message.Command() {
-	case "getID":
+	case "getid":
 		messageHandler()
+	case "greet":
+		greetHandler()
+
 	default:
 		errorHandler()
 	}

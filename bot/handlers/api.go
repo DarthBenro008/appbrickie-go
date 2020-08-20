@@ -4,6 +4,7 @@ import (
 	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"log"
+	"os"
 	"strconv"
 )
 
@@ -26,9 +27,11 @@ func SendPackage(id int64, message string, packagePath string) (bool, error) {
 		"document", packagePath)
 	if err != nil {
 		log.Println("Api SendPackage: " + err.Error())
+		_ = os.Remove(packagePath)
 		SendErrorMessage(id)
 		return false, err
 	}
+	_ = os.Remove(packagePath)
 	return true, nil
 }
 
