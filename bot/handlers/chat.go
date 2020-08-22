@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"appbrickie/bot/utils"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"strconv"
 )
@@ -24,13 +25,17 @@ func errorHandler() {
 func greetHandler() {
 	chatMessage.Text = "Hello " + HandlerUpdate.Message.Chat.FirstName + "!"
 }
-
+func helpHandler() {
+	chatMessage.Text = utils.GetHelpTemplate(HandlerUpdate.Message.Chat.FirstName)
+}
 func ChatHandler() {
 	switch HandlerUpdate.Message.Command() {
 	case "getid":
 		messageHandler()
 	case "greet":
 		greetHandler()
+	case "help":
+		helpHandler()
 
 	default:
 		errorHandler()
