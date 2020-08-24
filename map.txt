@@ -22,3 +22,4 @@ POST /api/v1/logs --DB
 ----API END----
 https://git.io/JUvRv -go
 https://git.io/JUvRm - docker
+	//dbargs := fmt.Sprintf("host=localhost port=5432 user=%s dbname=%s password=%s sslmode=disable", os.Getenv("DB_USERNAME"), os.Getenv("DB_NAME"), os.Getenv("DB_PASSWORD"))

@@ -18,7 +18,7 @@ func InitialiseBot() {
 	if err != nil {
 		log.Fatalf("Error Initialising bot due to %s", err.Error())
 	}
-	bot.Debug = true
+	bot.Debug = false
 	log.Printf("%s Bot is up and running", bot.Self.UserName)
 	handlers.HandlerBot = bot
 
