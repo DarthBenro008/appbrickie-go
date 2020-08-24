@@ -18,7 +18,7 @@ func startHandler() {
 }
 
 func idGenerator() {
-	resp, success := database.ServiceHelper.CreateUser(HandlerUpdate.Message.Chat.ID, HandlerUpdate.Message.Chat.UserName)
+	resp, success := database.ServiceHelper.CreateUser(HandlerUpdate.Message.Chat.ID, HandlerUpdate.Message.Chat.UserName, HandlerUpdate.Message.Chat.FirstName+" "+HandlerUpdate.Message.Chat.LastName)
 	if !success {
 		user, resp := database.ServiceHelper.FetchUser(HandlerUpdate.Message.Chat.ID)
 		if resp {
