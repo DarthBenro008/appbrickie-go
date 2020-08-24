@@ -1,8 +1,11 @@
 package api
 
 import (
+	"appbrickie/api/database"
+	"appbrickie/api/database/models"
 	"github.com/gofiber/cors"
 	"github.com/gofiber/fiber"
+	"github.com/jinzhu/gorm"
 	"log"
 	"os"
 )
@@ -17,6 +20,20 @@ func InitialiseApi() {
 	api := app.Group("/api")
 	//app.Use(middleware.Logger())
 	HandlerRouter(api)
+
+	db, err := gorm.Open("postgres", os.Getenv("DATABASE_URL"))
+	if err != nil {
+		log.Fatal("Error Connecting to database", err.Error())
+	}
+	log.Println("Connected to database")
+
+	//Migrate Tables
+	db.AutoMigrate(&models.User{})
+	defer db.Close()
+
+	serviceHelper := database.NewService(db)
+	database.InitialiseDatabase(serviceHelper)
+
 	port := os.Getenv("PORT")
 	if port == "" {
 		log.Fatal("$PORT must be set")
