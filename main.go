@@ -1,7 +1,7 @@
 package main
 
 import (
-	"appbrickie/bot"
+	"appbrickie/db"
 	"github.com/joho/godotenv"
 	"log"
 	"sync"
@@ -15,8 +15,8 @@ func main() {
 		log.Println("Error Loading env File")
 	}
 	wg.Add(1)
-	go bot.InitialiseBot()
+	//go bot.InitialiseBot()
 	//go api.InitialiseApi()
-	//go db.InitialiseDatabase()
+	go db.InitialiseDatabase()
 	wg.Wait()
 }
