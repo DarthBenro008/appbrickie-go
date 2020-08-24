@@ -9,7 +9,7 @@ import (
 )
 
 type Service interface {
-	CreateUser(chatId int64, username string) (string, bool)
+	CreateUser(chatId int64, username string, name string) (string, bool)
 	GetUserChatId(uid string) (int64, bool)
 	FetchUser(chatId int64) (models.User, bool)
 }
@@ -22,9 +22,12 @@ func NewService(db *gorm.DB) Service {
 	return &databaseService{db: db}
 }
 
-func (s *databaseService) CreateUser(chatId int64, username string) (string, bool) {
+func (s *databaseService) CreateUser(chatId int64, username string, name string) (string, bool) {
 	guid := xid.New()
-	user := models.User{Username: username, ChatId: chatId, UniqueId: guid.String()}
+	if len(username) == 0 {
+		username = "No Username"
+	}
+	user := models.User{Username: username, ChatId: chatId, UniqueId: guid.String(), Name: name}
 	err := s.db.Create(&user).Update("CreatedAt", time.Now()).Error
 	if err != nil {
 		log.Println(err.Error())
