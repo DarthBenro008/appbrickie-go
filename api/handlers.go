@@ -1,6 +1,7 @@
 package api
 
 import (
+	"appbrickie/api/database"
 	"appbrickie/bot/handlers"
 	"github.com/gofiber/fiber"
 	"log"
@@ -38,9 +39,16 @@ func sendPackage(c *fiber.Ctx) {
 	file, err := c.FormFile("file")
 	id := c.FormValue("id")
 	msg := c.FormValue("msg")
-	rid, _ := strconv.ParseInt(id, 10, 64)
+	chatId, resp := database.ServiceHelper.GetUserChatId(id)
+	if !resp {
+		_ = c.JSON(&fiber.Map{
+			"success": false,
+			"error":   "Invalid ID",
+		})
+		return
+	}
 	if err != nil {
-		handlers.SendErrorMessage(rid)
+		handlers.SendErrorMessage(chatId)
 		log.Println("Invalid Multipart")
 		_ = c.JSON(&fiber.Map{
 			"success": false,
@@ -49,7 +57,7 @@ func sendPackage(c *fiber.Ctx) {
 		return
 	}
 	if file.Size > 50000000 {
-		handlers.SendErrorMessage(rid)
+		handlers.SendErrorMessage(chatId)
 		_ = c.JSON(&fiber.Map{
 			"success": false,
 			"error":   "Exceeded Size Limit!",
@@ -65,7 +73,7 @@ func sendPackage(c *fiber.Ctx) {
 	}
 	err = c.SaveFile(file, "cache/"+file.Filename)
 	if err != nil {
-		handlers.SendErrorMessage(rid)
+		handlers.SendErrorMessage(chatId)
 		log.Println("Error Saving File")
 		_ = c.JSON(&fiber.Map{
 			"success": false,
@@ -73,14 +81,14 @@ func sendPackage(c *fiber.Ctx) {
 		})
 		return
 	}
-	response, err := handlers.SendPackage(rid, msg, "cache/"+file.Filename)
+	response, err := handlers.SendPackage(chatId, msg, "cache/"+file.Filename)
 	if err != nil {
-		handlers.SendErrorMessage(rid)
 		_ = c.JSON(&fiber.Map{
 			"success": false,
 			"file":    filename,
 			"error":   err.Error(),
 		})
+		return
 	}
 	_ = c.JSON(&fiber.Map{
 		"success": response,
