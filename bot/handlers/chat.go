@@ -13,6 +13,10 @@ var (
 	channelMessage = tgbotapi.NewMessage(0, "")
 )
 
+func startHandler() {
+	chatMessage.Text = utils.StartTemplate(HandlerUpdate.Message.Chat.FirstName)
+}
+
 func idGenerator() {
 	resp, success := database.ServiceHelper.CreateUser(HandlerUpdate.Message.Chat.ID, HandlerUpdate.Message.Chat.UserName)
 	if !success {
@@ -42,6 +46,8 @@ func helpHandler() {
 
 func ChatHandler() {
 	switch HandlerUpdate.Message.Command() {
+	case "start":
+		startHandler()
 	case "getid":
 		idGenerator()
 	case "greet":
