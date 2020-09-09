@@ -6,13 +6,12 @@ import (
 	"github.com/gofiber/fiber"
 	"log"
 	"os"
-	"strconv"
 )
 
 //Router
 func HandlerRouter(app fiber.Router) {
 	app.Get("/status", statusCheck)
-	app.Get("/sendMessage/:id", sendID)
+	app.Get("/sendMessage", sendID)
 	app.Post("/sendPackage", sendPackage)
 }
 
@@ -25,14 +24,23 @@ func statusCheck(c *fiber.Ctx) {
 }
 
 func sendID(c *fiber.Ctx) {
-	id := c.Params("id")
-	realId, _ := strconv.ParseInt(id, 10, 64)
-	res, err := handlers.SendMessage(realId, "This is an API automated Message!")
+	id := c.Query("id")
+	msg := c.Query("msg")
+	chatId, resp := database.ServiceHelper.GetUserChatId(id)
+	if !resp {
+		_ = c.JSON(&fiber.Map{
+			"success": false,
+			"id":      id,
+			"err":     "Error fetching chatId",
+		})
+	}
+	res, err := handlers.SendMessage(chatId, msg)
 	_ = c.JSON(&fiber.Map{
 		"success": res,
 		"id":      id,
 		"err":     err,
 	})
+
 }
 
 func sendPackage(c *fiber.Ctx) {

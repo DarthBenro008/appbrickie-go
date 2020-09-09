@@ -17,7 +17,7 @@ func GetHelpTemplate(username string) string {
 			"Commads that you can use when you add the bot as an admin in a channel to send automated builds\n\n"+
 			"1. !getid - Returns the unique id for the channel to put int he YAML file \n\n"+
 			"2. !help - To Print a list of commands in a channel \n\n\n"+
-			"If you like this bot , feel free to start this project on Github %s \n\n"+
+			"If you like this bot , feel free to star this project on Github %s \n\n"+
 			"You can find more details and instructions on %s \n", username, appBrickieGithub, appBrickieGo)
 	return helpTemplate
 }
