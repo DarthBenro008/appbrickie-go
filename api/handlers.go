@@ -2,7 +2,7 @@ package api
 
 import (
 	"appbrickie/api/database"
-	"appbrickie/bot/handlers"
+	"appbrickie/bot/telegram/handlers"
 	"github.com/gofiber/fiber"
 	"log"
 	"os"

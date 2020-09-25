@@ -1,7 +1,7 @@
-package bot
+package telegram
 
 import (
-	"appbrickie/bot/handlers"
+	"appbrickie/bot/telegram/handlers"
 	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"log"
