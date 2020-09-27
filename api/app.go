@@ -18,9 +18,10 @@ func InitialiseApi() {
 	})
 	app.Settings.BodyLimit = 52428800
 	api := app.Group("/api")
+	slack := api.Group("/slack")
 	//app.Use(middleware.Logger())
 	HandlerRouter(api)
-
+	SlackRouter(slack)
 	db, err := gorm.Open("postgres", os.Getenv("DATABASE_URL"))
 	if err != nil {
 		log.Fatal("Error Connecting to database", err.Error())
@@ -29,6 +30,7 @@ func InitialiseApi() {
 
 	//Migrate Tables
 	db.AutoMigrate(&models.User{})
+	db.AutoMigrate(&models.Slack{})
 	defer db.Close()
 
 	serviceHelper := database.NewService(db)
