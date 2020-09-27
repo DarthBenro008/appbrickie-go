@@ -3,6 +3,7 @@ package api
 import (
 	"appbrickie/api/database"
 	"appbrickie/api/database/models"
+	"fmt"
 	"github.com/gofiber/cors"
 	"github.com/gofiber/fiber"
 	"github.com/jinzhu/gorm"
@@ -18,10 +19,13 @@ func InitialiseApi() {
 	})
 	app.Settings.BodyLimit = 52428800
 	api := app.Group("/api")
+	slack := api.Group("/slack")
 	//app.Use(middleware.Logger())
 	HandlerRouter(api)
-
-	db, err := gorm.Open("postgres", os.Getenv("DATABASE_URL"))
+	SlackRouter(slack)
+	dbargs := fmt.Sprintf("host=localhost port=5432 user=%s dbname=%s password=%s sslmode=disable", os.Getenv("DB_USERNAME"), os.Getenv("DB_NAME"), os.Getenv("DB_PASSWORD"))
+	db, err := gorm.Open("postgres", dbargs)
+	//db, err := gorm.Open("postgres", os.Getenv("DATABASE_URL"))
 	if err != nil {
 		log.Fatal("Error Connecting to database", err.Error())
 	}
@@ -29,6 +33,7 @@ func InitialiseApi() {
 
 	//Migrate Tables
 	db.AutoMigrate(&models.User{})
+	db.AutoMigrate(&models.Slack{})
 	defer db.Close()
 
 	serviceHelper := database.NewService(db)
