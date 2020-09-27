@@ -26,7 +26,7 @@ func SendSlackPackage(channel string, msg string, packageName string) error {
 	params := slack.FileUploadParameters{
 		Title:    packageName,
 		Filetype: "apk",
-		File:     "cache/" + packageName + ".apk",
+		File:     "cache/" + packageName,
 	}
 	file, err := api.UploadFile(params)
 	if err != nil {
@@ -35,7 +35,8 @@ func SendSlackPackage(channel string, msg string, packageName string) error {
 		return err
 	}
 	fmt.Printf("Name: %s, URL: %s\n", file.Name, file.EditLink)
-	SendSlackMessage("msg"+file.Permalink, channel)
+	SendSlackMessage(msg+"\n\n"+file.Permalink, channel)
+	_ = os.Remove("cache/" + packageName)
 	return nil
 }
 

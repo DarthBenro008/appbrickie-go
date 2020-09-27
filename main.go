@@ -2,6 +2,7 @@ package main
 
 import (
 	"appbrickie/api"
+	"appbrickie/bot/telegram"
 	"github.com/joho/godotenv"
 	"log"
 	"sync"
@@ -15,7 +16,7 @@ func main() {
 		log.Println("Error Loading env File")
 	}
 	wg.Add(2)
-	//go telegram.InitialiseBot()
+	go telegram.InitialiseBot()
 	go api.InitialiseApi()
 	wg.Wait()
 }
